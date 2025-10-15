@@ -4,6 +4,32 @@ A comprehensive, modular web-based control panel for managing your Linux VPS ser
 
 **For:** Linux VPS / Cloud Servers
 
+## 🚀 Quick Start
+
+```bash
+# 1. Upload to server
+scp -r * root@YOUR-SERVER-IP:/var/www/html/panel/
+
+# 2. Set permissions
+ssh root@YOUR-SERVER-IP
+chown -R www-data:www-data /var/www/html/panel
+chmod -R 755 /var/www/html/panel
+
+# 3. Change password in config.php
+nano /var/www/html/panel/config.php
+
+# 4. Access
+# http://YOUR-SERVER-IP/panel/
+```
+
+## ⭐ What's New in File Manager
+
+- ✅ **Drag & Drop to Move Files** - Organize by dragging files to folders
+- ✅ **Grid/List View Toggle** - Switch between icon and detailed views
+- ✅ **Enhanced UI** - Modern Windows Explorer-style interface
+- ✅ **Light/Dark Mode** - Theme toggle with saved preference
+- ✅ **Improved Navigation** - Breadcrumbs, sidebar tree, keyboard shortcuts
+
 ## 📁 File Structure
 
 ```
@@ -57,10 +83,19 @@ Linux-web-server-Interface/
 - **Network Info** - Network interface statistics
 - **Auto-refresh** - Updates every 3 seconds
 
-### 📁 File Manager
-- Integration point for your full-featured file manager
-- Quick file operations via terminal
-- Disk usage statistics
+### 📁 File Manager (Enhanced!)
+- **Modern Windows Explorer Interface** - Familiar layout with sidebar and file grid
+- **Drag & Drop Upload** - Simply drag files to upload
+- **Drag & Drop to Move** - Drag files to folders to organize
+- **Grid/List View Toggle** - Switch between icon view and detailed table
+- **In-Browser Editor** - Edit HTML, PHP, CSS, JS, TXT files directly
+- **File Operations** - Upload, download, rename, delete, create folders
+- **Light/Dark Mode** - Toggle theme to suit your preference
+- **Breadcrumb Navigation** - Easy path navigation
+- **Directory Tree Sidebar** - Quick folder access
+- **Keyboard Shortcuts** - F2 (rename), Delete, F5 (refresh)
+- **Responsive Design** - Works on desktop and mobile
+- **Security Features** - Path traversal protection, file type validation
 
 ### 🌐 Website Management
 - **Virtual Host Listing** - See all configured sites
@@ -321,14 +356,121 @@ ls -la /var/log/apache2/
 chmod 644 /var/log/apache2/*.log
 ```
 
-## 🔄 Integration with Original File Manager
+## 📁 File Manager Guide
 
-To integrate your full-featured file manager into the Files module:
+### Accessing the File Manager
 
-1. Open `modules/files.php`
-2. Copy the file management code from your original `index.php`
-3. Paste it into the Files module
-4. Adjust paths and includes as needed
+**Standalone Access:**
+```
+http://YOUR-SERVER-IP/panel/filemanager.php
+```
+
+**Integrated Access:**
+- Click "Files" in the sidebar navigation
+
+### Features Overview
+
+#### 1. **Drag & Drop Upload**
+- Click "Upload" button or drag files directly
+- Supports multiple file uploads
+- Max file size: 50MB
+- Allowed types: html, php, js, css, txt, jpg, png, gif, svg, zip, pdf, json, xml, md
+
+#### 2. **Drag & Drop to Move Files** ⭐ NEW!
+- Click and hold any file/folder
+- Drag over a folder (it highlights blue)
+- Release to drop
+- Confirm the move
+- Works with sidebar folders too!
+
+#### 3. **View Modes** ⭐ NEW!
+- **Grid View (⊞)** - Large icons, perfect for browsing images
+- **List View (☰)** - Detailed table with size, date, permissions
+- Your preference is saved automatically
+
+#### 4. **File Operations**
+- **Upload** - Drag & drop or click to browse
+- **Download** - Select file and click download
+- **Rename** - Select file and press F2 or click Rename
+- **Delete** - Select file and press Delete or click Delete button
+- **Edit** - Double-click text files to edit in browser
+- **Create Folder** - Click "New Folder" button
+
+#### 5. **Navigation**
+- **Breadcrumbs** - Click any path segment to navigate
+- **Sidebar Tree** - Click folders in left sidebar
+- **Back/Up Buttons** - Navigate through history
+- **Double-click** - Open folders or edit files
+
+#### 6. **Keyboard Shortcuts**
+- `F2` - Rename selected file
+- `Delete` - Delete selected file
+- `F5` - Refresh file list
+- `Double-click` - Open folder or edit file
+
+#### 7. **Light/Dark Mode**
+- Click theme toggle in header
+- Preference saved in browser
+- Smooth transitions between themes
+
+### File Manager Configuration
+
+Edit `filemanager.php` (lines 3-6):
+
+```php
+define('ROOT_DIR', '/var/www/html');           // Root directory
+define('MAX_UPLOAD_SIZE', 52428800);           // 50MB limit
+define('ALLOWED_EXTENSIONS', array(...));      // Allowed file types
+define('EDITABLE_EXTENSIONS', array(...));     // Editable in browser
+```
+
+### Security Features
+
+✅ **Path Traversal Protection** - Cannot access files outside ROOT_DIR
+✅ **File Type Validation** - Only allowed extensions can be uploaded
+✅ **Input Sanitization** - All user inputs are sanitized
+✅ **Confirmation Dialogs** - Confirms before delete/move operations
+✅ **Size Limits** - 50MB upload limit prevents abuse
+
+### Tips & Tricks
+
+**Quick Organization:**
+1. Switch to List View (☰) to see file details
+2. Sort by date/size visually
+3. Drag files to folders to organize
+4. Switch back to Grid View (⊞) for visual browsing
+
+**Sidebar Shortcuts:**
+- Drag files directly to sidebar folders
+- No need to navigate into folder first
+- Quick access to deep directory structures
+
+**Batch Operations:**
+- Upload multiple files at once
+- Drag & drop supports multiple files
+- Progress shown for each file
+
+### Troubleshooting
+
+**Upload fails:**
+- Check folder permissions (755 for folders, 644 for files)
+- Verify file size < 50MB
+- Ensure file type is in ALLOWED_EXTENSIONS
+
+**Can't move files:**
+- Refresh page (F5)
+- Check destination folder permissions
+- Ensure not moving folder into itself
+
+**Editor not working:**
+- File must be in EDITABLE_EXTENSIONS
+- File size must be reasonable
+- Check file permissions (must be readable)
+
+**Dark mode not saving:**
+- Enable browser localStorage
+- Clear browser cache
+- Try different browser
 
 ## 📊 Module Overview
 
@@ -427,6 +569,36 @@ Personal/Educational use. Modify as needed for your server.
 
 ---
 
+## 🎯 File Manager Highlights
+
+The enhanced file manager (`filemanager.php`) is a standalone, production-ready tool that can be used independently or integrated into the control panel:
+
+### Standalone Use:
+```
+http://YOUR-SERVER-IP/panel/filemanager.php
+```
+
+### Key Features:
+- 🎨 **Modern UI** - Windows Explorer-style interface
+- 🖱️ **Drag & Drop** - Upload files and move them between folders
+- 👁️ **View Modes** - Grid (icons) and List (details) views
+- ✏️ **In-Browser Editor** - Edit code files directly
+- 🌓 **Dark Mode** - Easy on the eyes
+- ⌨️ **Keyboard Shortcuts** - Power user friendly
+- 🔒 **Secure** - Path traversal protection, file validation
+- 📱 **Responsive** - Works on mobile devices
+
+### Perfect For:
+- Managing website files without FTP
+- Quick edits to HTML/CSS/JS/PHP files
+- Organizing server files visually
+- Uploading multiple files at once
+- Moving files between directories
+
+---
+
 **🎉 You now have a complete server control panel!**
 
 Access all features through the sidebar navigation. Start with the Dashboard to get an overview of your system.
+
+**File Manager:** The standalone file manager is your go-to tool for visual file management - no more command line or FTP needed!
