@@ -1,0 +1,27 @@
+# Security Headers for Apache
+# Place this file in the same directory as index.php
+
+# Prevent directory listing
+Options -Indexes
+
+# Protect against clickjacking
+Header always set X-Frame-Options "SAMEORIGIN"
+
+# Prevent MIME type sniffing
+Header always set X-Content-Type-Options "nosniff"
+
+# Enable XSS protection
+Header always set X-XSS-Protection "1; mode=block"
+
+# Optional: Restrict access by IP address
+# Uncomment and add your IP addresses to enable
+# <RequireAll>
+#     Require ip YOUR.IP.ADDRESS.HERE
+#     Require ip ANOTHER.IP.ADDRESS
+# </RequireAll>
+
+# Increase PHP limits (if allowed)
+# php_value upload_max_filesize 50M
+# php_value post_max_size 50M
+# php_value max_execution_time 300
+# php_value max_input_time 300
