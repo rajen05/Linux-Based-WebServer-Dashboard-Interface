@@ -116,13 +116,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 else throw new Exception('Failed to move');
                 break;
             case 'get_tree':
-                function buildTree($d, $depth = 0, $maxDepth = 1) {
+                $allowedRootFolders = array('bin','boot','dev','etc','home','lib','lib64','lost+found','media','mnt','opt','proc','root','run','sbin','snap','srv','sys','tmp','usr','var');
+                function buildTree($d, $depth = 0, $maxDepth = 1, $allowedFolders = null) {
                     if ($depth >= $maxDepth) return array();
                     $t = array();
                     $items = @scandir($d);
                     if ($items === false) return $t;
                     foreach ($items as $i) {
                         if ($i==='.'||$i==='..') continue;
+                        if ($depth === 0 && $allowedFolders !== null && !in_array($i, $allowedFolders)) continue;
                         $f = $d . DIRECTORY_SEPARATOR . $i;
                         if (is_dir($f)) {
                             $hasChildren = false;
@@ -135,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                                     }
                                 }
                             }
-                            $t[] = array('name'=>$i,'path'=>$f,'children'=>buildTree($f, $depth + 1, $maxDepth),'hasChildren'=>$hasChildren);
+                            $t[] = array('name'=>$i,'path'=>$f,'children'=>buildTree($f, $depth + 1, $maxDepth, null),'hasChildren'=>$hasChildren);
                         }
                     }
                     usort($t, function($a,$b){ return strcasecmp($a['name'],$b['name']); });
@@ -146,12 +148,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     for ($l = 'A'; $l <= 'Z'; $l++) {
                         $drive = $l . ':\\\\';
                         if (is_dir($drive)) {
-                            $drives[] = array('name'=>$l.':','path'=>$drive,'children'=>buildTree($drive, 0, 1),'hasChildren'=>true);
+                            $drives[] = array('name'=>$l.':','path'=>$drive,'children'=>buildTree($drive, 0, 1, null),'hasChildren'=>true);
                         }
                     }
                     $res = array('success'=>true,'tree'=>$drives);
                 } else {
-                    $res = array('success'=>true,'tree'=>array(array('name'=>'/','path'=>'/','children'=>buildTree('/', 0, 1),'hasChildren'=>true)));
+                    $res = array('success'=>true,'tree'=>array(array('name'=>'/','path'=>'/','children'=>buildTree('/', 0, 1, $allowedRootFolders),'hasChildren'=>true)));
                 }
                 break;
             case 'get_folder_children':
