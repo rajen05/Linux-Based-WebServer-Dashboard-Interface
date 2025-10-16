@@ -151,7 +151,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     }
                     $res = array('success'=>true,'tree'=>$drives);
                 } else {
-                    $res = array('success'=>true,'tree'=>array(array('name'=>'/','path'=>'/','children'=>buildTree('/', 0, 1),'hasChildren'=>true)));
+                    $res = array('success'=>true,'tree'=>buildTree('/', 0, 1));
                 }
                 break;
         }
